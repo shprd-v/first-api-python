@@ -25,3 +25,40 @@ app = FastAPI()
 
 # Использование QUERY
 
+# @app.get("/user/{username}")
+# async def login(
+#         username: Annotated[str, Path(min_length=3, max_length=15, description='Enter your username', example='shprd')],
+#         first_name: Annotated[str | None, Query(max_length=10)] = None) -> dict:
+#     return {"user": username, "Name": first_name}
+
+# @app.get("/user/{username}")
+# async def login(
+#         username: Annotated[str, Path(min_length=3, max_length=15, description='Enter your username', example='shprd')],
+#         # В Query нельзя использовать default внутри аннотации, это задается простым значением вместо None, Обязательность параметра указывается многоточнием
+#         first_name: Annotated[str | None, Query(max_length=10)] = ...) -> dict:
+#     return {"user": username, "Name": first_name}
+
+@app.get("/user/{username}")
+async def login(
+        #Если по каким-то причинам мы хотим использовать Query без Annotated, то следует использовать следующий синтаксис:
+        username: str = Path(min_length=3, max_length=15, description='Enter your username', example='shprd'),
+        # Также с помощью параметра include_in_schema мы можем исключить данный параметр из документации.
+        first_name: str = Query(default=None, max_length=10, include_in_schema=False)) -> dict:
+    return {"user": username, "Name": first_name}
+
+# А вот так через QUERY выводим список по запросу.
+@app.get("/user")
+async def search(people: Annotated[list[str], Query()]) -> dict:
+    return {"user": people}
+
+# Можно и без Annotated
+# @app.get("/user")
+# async def search(people: List[str] = Query(...)):
+#     return {"user": people}
+
+# Или с нативным списком Python:
+# @app.get("/user")
+# async def search(people: list[str] = Query(...)):
+#     return {"user": people}
+
+# Есть ещё regex, используем встроенный моудуль re и вносим как параметр к query: regex="^J|s$"
