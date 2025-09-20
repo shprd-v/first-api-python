@@ -20,3 +20,11 @@ async def create_message(message_id: str) -> str:
 @app.put("/message/{message_id}")
 async def update_message(message_id: str, message: str) -> str:
     pass
+
+@app.delete("/message/{message_id}")
+async def delete_message(message_id:str) -> str:
+    pass
+
+@app.delete("/")
+async def kill_message_all() -> str:
+    pass
